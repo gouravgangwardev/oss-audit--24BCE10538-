@@ -1,19 +1,21 @@
 #!/bin/bash
+set -e  # FIXED: Exit immediately on any error
+# Run using: chmod +x script1_system_identity.sh && ./script1_system_identity.sh  # FIXED: Added run instruction
 # ============================================================
 # Script 1: System Identity Report
 # Author: Gourav Gangwar | Roll No: 24BCE10538
 # Course: Open Source Software | Chosen Software: Python
 # Description: Displays a welcome screen with system info
 # ============================================================
-STUDENT_NAME="Gourav Gangwar"          
-ROLL_NO="24BCE10538"     
+STUDENT_NAME="Gourav Gangwar"
+ROLL_NO="24BCE10538"
 SOFTWARE_CHOICE="Python"
-KERNEL=$(uname -r)                  
-USER_NAME=$(whoami)                 
-HOME_DIR=$HOME                      
-UPTIME=$(uptime -p)                 
-CURRENT_DATE=$(date '+%d %B %Y')   
-CURRENT_TIME=$(date '+%H:%M:%S')  
+KERNEL=$(uname -r)
+USER_NAME=$(whoami)
+HOME_DIR=$HOME
+UPTIME=$(uptime -p)
+CURRENT_DATE=$(date '+%d %B %Y')
+CURRENT_TIME=$(date '+%H:%M:%S')
 if [ -f /etc/os-release ]; then
     DISTRO=$(grep -w "PRETTY_NAME" /etc/os-release | cut -d= -f2 | tr -d '"')
 else
