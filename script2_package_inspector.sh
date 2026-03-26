@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+# Run using: chmod +x script2_foss_inspector.sh && ./script2_foss_inspector.sh
 # ============================================================
 # Script 2: FOSS Package Inspector
 # Author: Gourav Gangwar | Roll No: 24BCE10538
@@ -6,10 +8,20 @@
 # Description: Checks if a package is installed, shows its
 #              version and license, and prints a philosophy note
 # ============================================================
+
 PACKAGE="python3"
+
+# FIXED: Validate that PACKAGE variable is not empty before proceeding
+# Without this, the script would silently run with a blank package name
+if [ -z "$PACKAGE" ]; then
+    echo "  Error: PACKAGE variable is empty. Please set a valid package name."
+    exit 1
+fi
+
 echo "============================================================"
 echo "         FOSS Package Inspector — $PACKAGE                  "
 echo "============================================================"
+
 if command -v dpkg &>/dev/null; then
     PKG_MANAGER="dpkg"
 elif command -v rpm &>/dev/null; then
@@ -17,21 +29,42 @@ elif command -v rpm &>/dev/null; then
 else
     PKG_MANAGER="unknown"
 fi
+
 echo "  Detected package manager: $PKG_MANAGER"
 echo "------------------------------------------------------------"
+
 if [ "$PKG_MANAGER" = "dpkg" ]; then
     if dpkg -l "$PACKAGE" &>/dev/null; then
         echo "  STATUS: $PACKAGE is INSTALLED on this system."
         echo ""
+
+        # FIXED: Extract version cleanly using dpkg-query with a format string
         VERSION=$(dpkg-query -W -f='${Version}' "$PACKAGE" 2>/dev/null)
         echo "  Version : $VERSION"
-        dpkg -l "$PACKAGE" | grep "^ii" | awk '{print "  Summary : " $0}'
+
+        # FIXED: Extract short description cleanly using dpkg-query format
+        # Replaces the old `dpkg -l | grep | awk` chain which printed raw table rows
+        DESCRIPTION=$(dpkg-query -W -f='${binary:Summary}' "$PACKAGE" 2>/dev/null)
+        echo "  Summary : $DESCRIPTION"
+
+        # FIXED: Extract license information using apt-cache show
+        # dpkg itself does not expose license data; apt-cache show reads package metadata
+        LICENSE=$(apt-cache show "$PACKAGE" 2>/dev/null | grep -i "^License:" | head -1 | cut -d: -f2- | xargs)
+        if [ -n "$LICENSE" ]; then
+            echo "  License : $LICENSE"
+        else
+            # FIXED: Fallback message when license field is absent from apt metadata
+            echo "  License : Not specified in package metadata (check /usr/share/doc/$PACKAGE/copyright)"
+        fi
+
     else
         echo "  STATUS: $PACKAGE is NOT installed."
         echo "  To install it, run: sudo apt install python3"
         exit 1
     fi
+
 elif [ "$PKG_MANAGER" = "rpm" ]; then
+    # RPM logic unchanged as per requirements
     if rpm -q "$PACKAGE" &>/dev/null; then
         echo "  STATUS: $PACKAGE is INSTALLED on this system."
         echo ""
@@ -41,6 +74,7 @@ elif [ "$PKG_MANAGER" = "rpm" ]; then
         echo "  To install it, run: sudo dnf install python3"
         exit 1
     fi
+
 else
     if command -v python3 &>/dev/null; then
         echo "  STATUS: python3 found at: $(which python3)"
