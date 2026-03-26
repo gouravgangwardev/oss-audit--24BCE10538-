@@ -17,7 +17,7 @@ UPTIME=$(uptime -p)
 CURRENT_DATE=$(date '+%d %B %Y')
 CURRENT_TIME=$(date '+%H:%M:%S')
 if [ -f /etc/os-release ]; then
-    DISTRO=$(grep -w "PRETTY_NAME" /etc/os-release | cut -d= -f2 | tr -d '"')
+    DISTRO=$(grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"')
 else
     DISTRO="Unknown Linux Distribution"
 fi
