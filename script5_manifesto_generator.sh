@@ -1,4 +1,12 @@
 #!/bin/bash
+set -e  # FIXED: Exit immediately on any error
+# Run using: chmod +x script5_manifesto_generator.sh && ./script5_manifesto_generator.sh  # FIXED: Added run instruction
+
+# FIXED: Alias suggestion for convenience — add this to your ~/.bashrc to use shorthand
+# alias genmanifesto='./script5_manifesto_generator.sh'
+# After adding, run: source ~/.bashrc
+# Then you can simply type: genmanifesto
+
 # ============================================================
 # Script 5: Open Source Manifesto Generator
 # Author: Gourav Gangwar | Roll No: 24BCE10538
@@ -7,29 +15,45 @@
 #              a personalised open source philosophy statement
 #              saved to a .txt file
 # ============================================================
+
 echo "============================================================"
 echo "        Open Source Manifesto Generator                      "
 echo "============================================================"
 echo "  Answer three questions to generate your personal manifesto."
 echo "  Your answers will be woven into a philosophy statement."
 echo ""
+
 read -p "  1. Name one open-source tool you use every day: " TOOL
 echo ""
 read -p "  2. In one word, what does 'freedom' mean to you? " FREEDOM
 echo ""
 read -p "  3. Name one thing you would build and share freely: " BUILD
 echo ""
+
 if [ -z "$TOOL" ] || [ -z "$FREEDOM" ] || [ -z "$BUILD" ]; then
     echo "  Error: All three questions must be answered."
     echo "  Please run the script again and fill in all answers."
     exit 1
 fi
-DATE=$(date '+%d %B %Y')            
-AUTHOR=$(whoami)                   
+
+DATE=$(date '+%d %B %Y')
+AUTHOR=$(whoami)
 OUTPUT="manifesto_${AUTHOR}.txt"
+
+# FIXED: Check if the output file already exists before writing
+# This prevents silently overwriting a previously generated manifesto
+# The user is warned and given the chance to rename the old file manually
+if [ -f "$OUTPUT" ]; then
+    echo "  WARNING: Output file '$OUTPUT' already exists and will be overwritten."  # FIXED: Overwrite warning
+    echo "  If you want to keep the old version, press Ctrl+C now and rename it."
+    echo "  Continuing in 3 seconds..."
+    sleep 3
+fi
+
 echo "------------------------------------------------------------"
 echo "  Generating your manifesto..."
 echo "------------------------------------------------------------"
+
 echo "============================================================" > "$OUTPUT"
 echo "        MY OPEN SOURCE MANIFESTO                            " >> "$OUTPUT"
 echo "============================================================" >> "$OUTPUT"
@@ -57,6 +81,7 @@ echo "  This is what open source means to me."                    >> "$OUTPUT"
 echo ""                                                             >> "$OUTPUT"
 echo "  — $AUTHOR | $DATE"                                         >> "$OUTPUT"
 echo "============================================================" >> "$OUTPUT"
+
 echo ""
 echo "  Manifesto successfully saved to: $OUTPUT"
 echo "------------------------------------------------------------"
