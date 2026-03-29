@@ -15,7 +15,7 @@ LOGFILE=$1
 KEYWORD=${2:-"error"}
 COUNT=0
 
-# FIXED: Replaced [ -z "$LOGFILE" ] with [ $# -lt 1 ]
+
 # $# -lt 1 directly checks the number of arguments passed to the script,
 # which is more robust and idiomatic than checking if $1 is an empty string.
 # A user could pass an empty string "" as $1 and bypass the old check.
@@ -31,7 +31,7 @@ if [ ! -f "$LOGFILE" ]; then
     exit 1
 fi
 
-# FIXED: Replaced immediate exit on empty file with a retry loop
+
 # Previously the script exited if the file was empty ([ ! -s ]).
 # Now it waits and retries every 2 seconds — useful for log files
 # that are still being written to or haven't been populated yet.
@@ -54,7 +54,7 @@ echo "  Scanning file line by line..."
 echo ""
 
 while IFS= read -r LINE; do
-    # FIXED: Replaced `echo "$LINE" | grep -iq "$KEYWORD"` with bash regex
+   
     # [[ "$LINE" =~ $KEYWORD ]] performs the match entirely within bash
     # without spawning a grep subprocess for every single line.
     # This is significantly faster on large log files.
@@ -72,7 +72,6 @@ echo "  RESULT: Keyword '$KEYWORD' was found $COUNT time(s)"
 echo "          in the file: $LOGFILE"
 echo "------------------------------------------------------------"
 
-# Unchanged: tail output of last 5 matching lines preserved as required
 echo ""
 echo "  Last 5 lines containing '$KEYWORD':"
 echo "------------------------------------------------------------"
@@ -87,7 +86,6 @@ fi
 
 echo "------------------------------------------------------------"
 
-# Unchanged: percentage calculation preserved as required
 TOTAL_LINES=$(wc -l < "$LOGFILE")
 echo "  Total lines in file : $TOTAL_LINES"
 echo "  Lines with keyword  : $COUNT"
