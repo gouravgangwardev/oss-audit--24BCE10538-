@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # FIXED: Exit immediately on any error
+set -e  
 # Run using: chmod +x script1_system_identity.sh && ./script1_system_identity.sh  # FIXED: Added run instruction
 # ============================================================
 # Script 1: System Identity Report
