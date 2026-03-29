@@ -10,8 +10,6 @@ set -e
 # ============================================================
 
 PACKAGE="python3"
-
-# FIXED: Validate that PACKAGE variable is not empty before proceeding
 # Without this, the script would silently run with a blank package name
 if [ -z "$PACKAGE" ]; then
     echo "  Error: PACKAGE variable is empty. Please set a valid package name."
@@ -38,22 +36,21 @@ if [ "$PKG_MANAGER" = "dpkg" ]; then
         echo "  STATUS: $PACKAGE is INSTALLED on this system."
         echo ""
 
-        # FIXED: Extract version cleanly using dpkg-query with a format string
+       
         VERSION=$(dpkg-query -W -f='${Version}' "$PACKAGE" 2>/dev/null)
         echo "  Version : $VERSION"
 
-        # FIXED: Extract short description cleanly using dpkg-query format
+        
         # Replaces the old `dpkg -l | grep | awk` chain which printed raw table rows
         DESCRIPTION=$(dpkg-query -W -f='${binary:Summary}' "$PACKAGE" 2>/dev/null)
         echo "  Summary : $DESCRIPTION"
 
-        # FIXED: Extract license information using apt-cache show
         # dpkg itself does not expose license data; apt-cache show reads package metadata
         LICENSE=$(apt-cache show "$PACKAGE" 2>/dev/null | grep -i "^License:" | head -1 | cut -d: -f2- | xargs)
         if [ -n "$LICENSE" ]; then
             echo "  License : $LICENSE"
         else
-            # FIXED: Fallback message when license field is absent from apt metadata
+            
             echo "  License : Not specified in package metadata (check /usr/share/doc/$PACKAGE/copyright)"
         fi
 
