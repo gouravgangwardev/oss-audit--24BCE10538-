@@ -1,4 +1,4 @@
-# SS Capstone Project — The Open Source Audit
+# OSS Capstone Project — The Open Source Audit
 
 **Student Name:** Gourav Gangwar
 **Roll Number:** 24BCE10538
