@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e  
-# Run using: chmod +x script1_system_identity.sh && ./script1_system_identity.sh  # FIXED: Added run instruction
+# Run using: chmod +x script1_system_identity.sh && ./script1_system_identity.sh  
 # ============================================================
 # Script 1: System Identity Report
 # Author: Gourav Gangwar | Roll No: 24BCE10538
